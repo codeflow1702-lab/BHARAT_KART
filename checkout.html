@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BharatKart | Checkout</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root { --primary: #3b82f6; --dark: #1e293b; --bg: #f8fafc; }
+        body { font-family: 'Poppins', sans-serif; background: var(--bg); margin: 0; color: var(--dark); }
+
+        .container { max-width: 1000px; margin: 40px auto; padding: 20px; display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; }
+        
+        /* LEFT: FORM */
+        .form-card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        h2 { margin-bottom: 20px; font-weight: 700; border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; }
+        
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 500; font-size: 14px; }
+        input, select { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; }
+        input:focus { border-color: var(--primary); }
+
+        /* RIGHT: SUMMARY */
+        .summary-card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); height: fit-content; }
+        .summary-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 14px; color: #64748b; }
+        .total-row { display: flex; justify-content: space-between; margin-top: 20px; padding-top: 20px; border-top: 1px solid #f1f5f9; font-weight: 700; font-size: 20px; color: var(--dark); }
+
+        .place-order-btn { width: 100%; background: var(--dark); color: white; padding: 15px; border: none; border-radius: 8px; font-weight: 600; font-size: 16px; cursor: pointer; margin-top: 20px; transition: 0.3s; }
+        .place-order-btn:hover { background: var(--primary); }
+        .place-order-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+        @media(max-width: 768px) { .container { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- SHIPPING DETAILS -->
+        <div class="form-card">
+            <h2>Shipping Details</h2>
+            <form id="checkoutForm">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="fullName" required placeholder="Enter your name">
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="phone" required placeholder="+91 9876543210">
+                </div>
+                <div class="form-group">
+                    <label>Address</label>
+                    <input type="text" id="address" required placeholder="House No, Street Area">
+                </div>
+                <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div>
+                        <label>City</label>
+                        <input type="text" id="city" required>
+                    </div>
+                    <div>
+                        <label>Pincode</label>
+                        <input type="number" id="pincode" required>
+                    </div>
+                </div>
+                
+                <h2 style="margin-top: 30px;">Payment Method</h2>
+                <div class="form-group">
+                    <select id="paymentMethod">
+                        <option value="COD">Cash on Delivery (COD)</option>
+                        <option value="ONLINE" disabled>Online Payment (Coming Soon)</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+
+        <!-- ORDER SUMMARY -->
+        <div class="summary-card">
+            <h2>Order Summary</h2>
+            <div id="orderItems"></div> <!-- JS fills this -->
+            
+            <div class="summary-row" style="margin-top: 20px;">
+                <span>Total Amount</span>
+                <span id="totalAmount" style="color: black; font-weight: 700;">₹ 0</span>
+            </div>
+            
+            <button class="place-order-btn" id="placeOrderBtn" onclick="placeOrder()">Place Order</button>
+        </div>
+    </div>
+
+    <!-- FIREBASE LOGIC -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDLCNAA-bbUo2EQfp1EDfGE76b8iSQmCTI",
+            authDomain: "bharat-c734b.firebaseapp.com",
+            projectId: "bharat-c734b",
+            appId: "1:273763763790:web:b2499eff81a4b5b5c3651f"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+        // 1. CHECK AUTH & LOAD CART
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                loadSummary();
+            } else {
+                window.location.href = "login page/index.html";
+            }
+        });
+
+        // 2. DISPLAY SUMMARY
+        function loadSummary() {
+            if(cart.length === 0) {
+                alert("Your cart is empty!");
+                window.location.href = "home.html";
+                return;
+            }
+
+            const summaryDiv = document.getElementById("orderItems");
+            let total = 0;
+
+            cart.forEach(item => {
+                total += parseInt(item.price);
+                const div = document.createElement("div");
+                div.className = "summary-row";
+                div.innerHTML = `<span>${item.name}</span> <span>₹${item.price}</span>`;
+                summaryDiv.appendChild(div);
+            });
+
+            // Add 5% Tax
+            let tax = Math.round(total * 0.05);
+            let finalTotal = total + tax;
+
+            document.getElementById("totalAmount").innerText = "₹ " + finalTotal;
+        }
+
+        // 3. PLACE ORDER FUNCTION (Global)
+        window.placeOrder = async () => {
+            const btn = document.getElementById("placeOrderBtn");
+            
+            // Validation
+            const name = document.getElementById("fullName").value;
+            const phone = document.getElementById("phone").value;
+            const address = document.getElementById("address").value;
+            const city = document.getElementById("city").value;
+            const pincode = document.getElementById("pincode").value;
+
+            if(!name || !phone || !address || !city || !pincode) {
+                alert("Please fill in all shipping details");
+                return;
+            }
+
+            btn.innerText = "Processing...";
+            btn.disabled = true;
+
+            try {
+                // Calculate Final Amount
+                let total = cart.reduce((sum, item) => sum + parseInt(item.price), 0);
+                let finalTotal = total + Math.round(total * 0.05);
+
+                // DATA TO SAVE IN FIREBASE
+                const orderData = {
+                    userId: currentUser.uid,
+                    userEmail: currentUser.email,
+                    items: cart, // The array of products
+                    amount: finalTotal,
+                    shipping: {
+                        name: name,
+                        phone: phone,
+                        address: address,
+                        city: city,
+                        pincode: pincode
+                    },
+                    status: "Placed", // Initial status
+                    paymentMethod: "COD",
+                    createdAt: serverTimestamp() // Firestore Time
+                };
+
+                // WRITE TO FIRESTORE "orders" COLLECTION
+                await addDoc(collection(db, "orders"), orderData);
+
+                // SUCCESS: Clear cart & Redirect
+                localStorage.removeItem("cart");
+                window.location.href = "order-success.html";
+
+            } catch (error) {
+                console.error("Error placing order: ", error);
+                alert("Order Failed: " + error.message);
+                btn.innerText = "Place Order";
+                btn.disabled = false;
+            }
+        };
+    </script>
+</body>
+</html>

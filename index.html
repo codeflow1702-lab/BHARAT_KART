@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BharatKart | Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- LINK TO NEW CSS -->
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Page Specific Styles (Hero, Grid) */
+        .hero { max-width: 1300px; margin: 20px auto; background-color: var(--primary-bg); border-radius: 30px; padding: 40px 60px; display: flex; align-items: center; justify-content: space-between; min-height: 500px; }
+        .hero h1 { font-size: 64px; font-weight: 800; margin-bottom: 20px; line-height: 1.1; }
+        .search-bar { background: white; padding: 10px 20px; border-radius: 12px; display: flex; align-items: center; width: fit-content; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .search-bar input { border: none; outline: none; padding: 5px; width: 250px; font-size: 14px; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 30px; margin: 60px auto; max-width: 1200px; padding: 0 20px; }
+        .product-card { transition: transform 0.3s ease; padding-bottom: 10px; }
+        .prod-img { height: 300px; background-color: #f4f4f4; border-radius: 12px; margin-bottom: 15px; overflow: hidden; }
+        .prod-img img { width: 100%; height: 100%; object-fit: cover; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="index.html" class="logo">BharatKart</a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="#products">Products</a>
+            <a href="cart.html">Cart</a>
+        </div>
+        <div class="nav-icons">
+            <a href="cart.html">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span id="cartBadge">0</span>
+            </a>
+            <a href="profile.html"><i class="fa-solid fa-user"></i></a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <header class="hero">
+        <div class="hero-text">
+            <h1>Buy your <br> dream items</h1>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search products...">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+        </div>
+        <!-- You can add your hero image here -->
+        <div class="hero-image" style="width: 400px; height: 400px; background-image: url('https://images.unsplash.com/photo-1542395562-d2734f40f3bd?w=600'); background-size: cover; border-radius: 0 0 200px 200px;"></div>
+    </header>
+
+    <!-- PRODUCTS SECTION -->
+    <section id="products">
+        <h2 style="text-align:center; margin-top:60px; font-size:32px;">Our Products</h2>
+        
+        <!-- DYNAMIC GRID -->
+        <div class="product-grid" id="productGrid">
+            <p style="color:#777;">Loading products...</p>
+        </div>
+    </section>
+
+    <!-- TOAST CONTAINER -->
+    <div id="toast"></div>
+
+ <!-- MAIN LOGIC -->
+ <script type="module">
+        // 1. Import Shared Logic
+        import { auth, db, collection, getDocs, onAuthStateChanged } from './firebase.js';
+        import { updateQty, getCart } from './js/cart.js';
+        import { updateCartBadge, showToast } from './js/main.js';
+
+        // 2. Load Products
+        async function loadProducts() {
+            const grid = document.getElementById('productGrid');
+            const cart = getCart(); // Get current cart state
+            
+            try {
+                const querySnapshot = await getDocs(collection(db, "products"));
+
+console.log("PRODUCT COUNT:", querySnapshot.size);
+                
+                if (querySnapshot.empty) {
+    grid.innerHTML = "<p style='color:red;'>Firestore returned 0 products.</p>";
+    return;
+}
+
+                grid.innerHTML = ""; 
+
+                querySnapshot.forEach((doc) => {
+                    const prod = doc.data();
+                    const prodId = doc.id;
+                    
+                    // Check cart quantity
+                    const cartItem = cart.find(item => item.id === prodId);
+                    const qty = cartItem ? cartItem.quantity : 0;
+
+                    // Generate HTML
+                    const html = `
+                        <div class="product-card" data-name="${prod.name.toLowerCase()}">
+                            <div class="prod-img">
+                                <img src="${prod.image}" onerror="this.src='https://via.placeholder.com/300'">
+                            </div>
+                            <div style="padding:15px;">
+                                <h4 style="font-size:18px; margin-bottom:5px;">${prod.name}</h4>
+                                <span style="color:#777;">₹ ${prod.price}</span>
+                                
+                                <div class="btn-container" id="btn-${prodId}">
+                                    ${getButtonHTML(prodId, prod.name, prod.price, prod.image, qty)}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    grid.innerHTML += html;
+                });
+                updateCartBadge();
+
+            } catch (error) {
+    console.error("PRODUCT ERROR:", error);
+
+    grid.innerHTML = `
+        <div style="color:red; padding:20px;">
+            <h3>Product Error</h3>
+            <p>${error.code || ""}</p>
+            <p>${error.message || error}</p>
+        </div>
+    `;
+}
+}
+
+        // 3. Handle Updates (Attached to Window so HTML onclick works)
+        window.handleUpdate = (id, name, price, image, change) => {
+            const newCart = updateQty(id, name, price, image, change);
+            
+            // Find the new quantity
+            const item = newCart.find(i => i.id === id);
+            const newQty = item ? item.quantity : 0;
+
+            // Update just that button
+            const btnContainer = document.getElementById(`btn-${id}`);
+            if(btnContainer) {
+                btnContainer.innerHTML = getButtonHTML(id, name, price, image, newQty);
+            }
+            updateCartBadge();
+        };
+
+        // 4. Button HTML Generator (Only declared ONCE now)
+        function getButtonHTML(id, name, price, image, qty) {
+            if (qty > 0) {
+                return `
+                    <div class="qty-control">
+                        <button class="qty-btn" onclick="handleUpdate('${id}', '${name}', ${price}, '${image}', -1)">−</button>
+                        <span class="qty-text">${qty}</span>
+                        <button class="qty-btn" onclick="handleUpdate('${id}', '${name}', ${price}, '${image}', 1)">+</button>
+                    </div>
+                `;
+            } else {
+                return `
+                    <button class="add-cart-btn" onclick="handleUpdate('${id}', '${name}', ${price}, '${image}', 1)">
+                        Add to Cart
+                    </button>
+                `;
+            }
+        }
+
+        // 5. Search Logic
+        const searchInput = document.getElementById('searchInput');
+        if(searchInput) {
+            searchInput.addEventListener('keyup', (e) => {
+                const val = e.target.value.toLowerCase();
+                document.querySelectorAll('.product-card').forEach(card => {
+                    card.style.display = card.dataset.name.includes(val) ? 'block' : 'none';
+                });
+            });
+        }
+
+        // Init
+        loadProducts();
+        
+        // Auth Check
+        onAuthStateChanged(auth, (user) => {
+    if (!user) {
+        window.location.href = "login/login.html";
+        return;
+    }
+
+    loadProducts();
+});
+    </script>
+</body>
+</html>
