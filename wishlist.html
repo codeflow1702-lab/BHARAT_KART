@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>BharatKart | Wishlist</title>
+
+
+    <!-- Google Font -->
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- Font Awesome -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    >
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+
+        body {
+            background: #f7f8fa;
+            color: #1e1e1e;
+        }
+
+
+        /* =========================
+           NAVBAR
+        ========================= */
+
+        nav {
+            background: white;
+
+            padding: 18px 5%;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            box-shadow:
+                0 2px 10px rgba(0, 0, 0, 0.06);
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 100;
+        }
+
+
+        .logo {
+            text-decoration: none;
+
+            color: #1e1e1e;
+
+            font-size: 24px;
+
+            font-weight: 700;
+        }
+
+
+        .nav-right {
+            display: flex;
+
+            align-items: center;
+
+            gap: 20px;
+        }
+
+
+        .nav-link {
+            text-decoration: none;
+
+            color: #1e1e1e;
+
+            font-size: 14px;
+
+            font-weight: 500;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 7px;
+        }
+
+
+        .nav-link:hover {
+            color: #555;
+        }
+
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .container {
+            max-width: 1100px;
+
+            margin: 40px auto;
+
+            padding: 0 20px;
+        }
+
+
+        .page-title {
+            margin-bottom: 25px;
+        }
+
+
+        .page-title h1 {
+            font-size: 30px;
+
+            margin-bottom: 5px;
+        }
+
+
+        .page-title p {
+            color: #777;
+
+            font-size: 14px;
+        }
+
+
+        /* =========================
+           LOADING
+        ========================= */
+
+        .loading {
+            text-align: center;
+
+            padding: 70px 20px;
+
+            color: #777;
+        }
+
+
+        .loading i {
+            font-size: 35px;
+
+            margin-bottom: 15px;
+        }
+
+
+        /* =========================
+           EMPTY WISHLIST
+        ========================= */
+
+        .empty-wishlist {
+            background: white;
+
+            border-radius: 16px;
+
+            padding: 70px 20px;
+
+            text-align: center;
+
+            box-shadow:
+                0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+
+        .empty-wishlist i {
+            font-size: 65px;
+
+            color: #d1d5db;
+
+            margin-bottom: 20px;
+        }
+
+
+        .empty-wishlist h2 {
+            margin-bottom: 8px;
+        }
+
+
+        .empty-wishlist p {
+            color: #777;
+
+            font-size: 14px;
+
+            margin-bottom: 25px;
+        }
+
+
+        .shop-btn {
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            background: #1e1e1e;
+
+            color: white;
+
+            text-decoration: none;
+
+            padding: 12px 22px;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+
+            font-weight: 600;
+        }
+
+
+        .shop-btn:hover {
+            background: #333;
+        }
+
+
+        /* =========================
+           WISHLIST GRID
+        ========================= */
+
+        .wishlist-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 22px;
+        }
+
+
+        /* =========================
+           PRODUCT CARD
+        ========================= */
+
+        .wishlist-card {
+            background: white;
+
+            border-radius: 15px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 4px 15px rgba(0, 0, 0, 0.06);
+
+            transition:
+                transform 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+
+        .wishlist-card:hover {
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 8px 22px rgba(0, 0, 0, 0.09);
+        }
+
+
+        /* =========================
+           IMAGE
+        ========================= */
+
+        .product-image {
+            height: 230px;
+
+            background: #f5f6f7;
+
+            position: relative;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 15px;
+        }
+
+
+        .product-image img {
+            width: 100%;
+
+            height: 100%;
+
+            object-fit: contain;
+        }
+
+
+        /* =========================
+           REMOVE BUTTON
+        ========================= */
+
+        .remove-btn {
+            position: absolute;
+
+            top: 12px;
+
+            right: 12px;
+
+            width: 40px;
+
+            height: 40px;
+
+            border: none;
+
+            border-radius: 50%;
+
+            background: white;
+
+            color: #e63946;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            cursor: pointer;
+
+            box-shadow:
+                0 3px 10px rgba(0, 0, 0, 0.12);
+
+            transition: 0.2s;
+        }
+
+
+        .remove-btn:hover {
+            transform: scale(1.08);
+
+            background: #fff0f1;
+        }
+
+
+        .remove-btn i {
+            font-size: 18px;
+        }
+
+
+        /* =========================
+           PRODUCT INFO
+        ========================= */
+
+        .product-info {
+            padding: 18px;
+        }
+
+
+        .product-name {
+            font-size: 17px;
+
+            font-weight: 600;
+
+            margin-bottom: 8px;
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+        }
+
+
+        .product-price {
+            font-size: 18px;
+
+            font-weight: 700;
+
+            margin-bottom: 15px;
+        }
+
+
+        /* =========================
+           ADD TO CART
+        ========================= */
+
+        .cart-btn {
+            width: 100%;
+
+            border: none;
+
+            background: #1e1e1e;
+
+            color: white;
+
+            padding: 11px;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 8px;
+
+            transition: 0.2s;
+        }
+
+
+        .cart-btn:hover {
+            background: #333;
+        }
+
+
+        /* =========================
+           TOAST
+        ========================= */
+
+        #toast {
+            position: fixed;
+
+            bottom: 30px;
+
+            left: 50%;
+
+            transform: translateX(-50%);
+
+            background: #1e1e1e;
+
+            color: white;
+
+            padding: 12px 20px;
+
+            border-radius: 8px;
+
+            font-size: 13px;
+
+            opacity: 0;
+
+            pointer-events: none;
+
+            transition: 0.3s;
+
+            z-index: 9999;
+
+            max-width: 90%;
+
+            text-align: center;
+        }
+
+
+        #toast.show {
+            opacity: 1;
+
+            bottom: 50px;
+        }
+
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 800px) {
+
+            .wishlist-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+        }
+
+
+        @media (max-width: 550px) {
+
+            nav {
+                padding: 15px 20px;
+            }
+
+
+            .logo {
+                font-size: 20px;
+            }
+
+
+            .nav-link span {
+                display: none;
+            }
+
+
+            .container {
+                margin-top: 25px;
+            }
+
+
+            .page-title h1 {
+                font-size: 25px;
+            }
+
+
+            .wishlist-grid {
+                grid-template-columns: 1fr;
+            }
+
+
+            .product-image {
+                height: 260px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         NAVBAR
+    ========================= -->
+
+    <nav>
+
+        <a
+            href="home.html"
+            class="logo"
+        >
+            BharatKart
+        </a>
+
+
+        <div class="nav-right">
+
+            <a
+                href="home.html"
+                class="nav-link"
+            >
+                <i class="fa-solid fa-house"></i>
+
+                <span>Home</span>
+            </a>
+
+
+            <a
+                href="profile.html"
+                class="nav-link"
+            >
+                <i class="fa-solid fa-user"></i>
+
+                <span>Profile</span>
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <!-- =========================
+         MAIN
+    ========================= -->
+
+    <main class="container">
+
+
+        <div class="page-title">
+
+            <h1>
+                My Wishlist ❤️
+            </h1>
+
+            <p>
+                Products you saved for later.
+            </p>
+
+        </div>
+
+
+        <!-- Wishlist content -->
+
+        <div id="wishlistContainer">
+
+            <div class="loading">
+
+                <i class="fa-solid fa-spinner fa-spin"></i>
+
+                <p>
+                    Loading your wishlist...
+                </p>
+
+            </div>
+
+        </div>
+
+
+    </main>
+
+
+    <!-- Toast -->
+
+    <div id="toast"></div>
+
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================= -->
+
+    <script type="module">
+
+
+        // Firebase
+
+        import {
+
+            auth,
+
+            db,
+
+            onAuthStateChanged,
+
+            collection,
+
+            query,
+
+            where,
+
+            getDocs,
+
+            doc,
+
+            deleteDoc
+
+        } from "./firebase.js";
+
+
+        // Existing cart system
+
+        import {
+
+            updateQty
+
+        } from "./js/cart.js";
+
+
+        const wishlistContainer =
+            document.getElementById(
+                "wishlistContainer"
+            );
+
+
+        // =====================================
+        // AUTHENTICATION
+        // =====================================
+
+        onAuthStateChanged(
+            auth,
+            async (user) => {
+
+                if (!user) {
+
+                    window.location.href =
+                        "login/index.html";
+
+                    return;
+
+                }
+
+
+                await loadWishlist(
+                    user.uid
+                );
+
+            }
+        );
+
+
+        // =====================================
+        // LOAD WISHLIST
+        // =====================================
+
+        async function loadWishlist(
+            userId
+        ) {
+
+            try {
+
+                const wishlistRef =
+                    collection(
+                        db,
+                        "wishlists"
+                    );
+
+
+                const wishlistQuery =
+                    query(
+                        wishlistRef,
+                        where(
+                            "userId",
+                            "==",
+                            userId
+                        )
+                    );
+
+
+                const snapshot =
+                    await getDocs(
+                        wishlistQuery
+                    );
+
+
+                if (snapshot.empty) {
+
+                    showEmptyWishlist();
+
+                    return;
+
+                }
+
+
+                const products = [];
+
+
+                snapshot.forEach(
+                    (wishlistDoc) => {
+
+                        products.push({
+
+                            firestoreId:
+                                wishlistDoc.id,
+
+                            ...wishlistDoc.data()
+
+                        });
+
+                    }
+                );
+
+
+                // Newest saved products first
+
+                products.sort(
+                    (a, b) => {
+
+                        const timeA =
+                            a.createdAt?.toMillis?.()
+                            || 0;
+
+                        const timeB =
+                            b.createdAt?.toMillis?.()
+                            || 0;
+
+                        return timeB - timeA;
+
+                    }
+                );
+
+
+                renderWishlist(
+                    products
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Wishlist error:",
+                    error
+                );
+
+
+                wishlistContainer.innerHTML = `
+
+                    <div class="empty-wishlist">
+
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+
+                        <h2>
+                            Unable to load wishlist
+                        </h2>
+
+                        <p>
+                            ${escapeHtml(
+                                error.message
+                            )}
+                        </p>
+
+                    </div>
+
+                `;
+
+            }
+
+        }
+
+
+        // =====================================
+        // EMPTY WISHLIST
+        // =====================================
+
+        function showEmptyWishlist() {
+
+            wishlistContainer.innerHTML = `
+
+                <div class="empty-wishlist">
+
+                    <i class="fa-regular fa-heart"></i>
+
+                    <h2>
+                        Your Wishlist is Empty
+                    </h2>
+
+                    <p>
+                        Save products you love here
+                        and find them easily later.
+                    </p>
+
+                    <a
+                        href="home.html"
+                        class="shop-btn"
+                    >
+
+                        <i class="fa-solid fa-bag-shopping"></i>
+
+                        Start Shopping
+
+                    </a>
+
+                </div>
+
+            `;
+
+        }
+
+
+        // =====================================
+        // RENDER WISHLIST
+        // =====================================
+
+        function renderWishlist(
+            products
+        ) {
+
+            wishlistContainer.innerHTML = `
+
+                <div class="wishlist-grid">
+
+                    ${products
+                        .map(
+                            product =>
+                                createProductCard(
+                                    product
+                                )
+                        )
+                        .join("")
+                    }
+
+                </div>
+
+            `;
+
+
+            // Add button events
+
+            document
+                .querySelectorAll(
+                    ".remove-btn"
+                )
+                .forEach(
+                    button => {
+
+                        button.addEventListener(
+                            "click",
+                            () => {
+
+                                removeFromWishlist(
+                                    button.dataset.id
+                                );
+
+                            }
+                        );
+
+                    }
+                );
+
+
+            // Add to cart buttons
+
+            document
+                .querySelectorAll(
+                    ".cart-btn"
+                )
+                .forEach(
+                    button => {
+
+                        button.addEventListener(
+                            "click",
+                            () => {
+
+                                addProductToCart(
+                                    button
+                                        .dataset
+                                        .id,
+
+                                    button
+                                        .dataset
+                                        .name,
+
+                                    button
+                                        .dataset
+                                        .price,
+
+                                    button
+                                        .dataset
+                                        .image
+
+                                );
+
+                            }
+                        );
+
+                    }
+                );
+
+        }
+
+
+        // =====================================
+        // CREATE PRODUCT CARD
+        // =====================================
+
+        function createProductCard(
+            product
+        ) {
+
+            const name =
+                product.name ||
+                "Product";
+
+
+            const price =
+                Number(
+                    product.price || 0
+                );
+
+
+            const image =
+                product.image ||
+                "";
+
+
+            const productId =
+                product.productId ||
+                product.firestoreId;
+
+
+            return `
+
+                <div class="wishlist-card">
+
+
+                    <!-- IMAGE -->
+
+                    <div class="product-image">
+
+
+                        ${
+                            image
+
+                            ? `
+
+                                <img
+                                    src="${escapeHtml(image)}"
+                                    alt="${escapeHtml(name)}"
+
+                                    onerror="
+                                        this.style.display='none';
+                                    "
+                                >
+
+                              `
+
+                            : `
+
+                                <i
+                                    class="fa-solid fa-box"
+                                    style="
+                                        font-size:50px;
+                                        color:#cbd5e1;
+                                    "
+                                ></i>
+
+                              `
+                        }
+
+
+                        <!-- REMOVE -->
+
+                        <button
+                            class="remove-btn"
+                            data-id="${escapeHtml(
+                                product.firestoreId
+                            )}"
+                            title="Remove from Wishlist"
+                        >
+
+                            <i
+                                class="fa-solid fa-heart"
+                            ></i>
+
+                        </button>
+
+
+                    </div>
+
+
+                    <!-- INFO -->
+
+                    <div class="product-info">
+
+
+                        <div class="product-name">
+
+                            ${escapeHtml(name)}
+
+                        </div>
+
+
+                        <div class="product-price">
+
+                            ₹${price.toLocaleString(
+                                "en-IN"
+                            )}
+
+                        </div>
+
+
+                        <button
+                            class="cart-btn"
+
+                            data-id="${escapeHtml(
+                                productId
+                            )}"
+
+                            data-name="${escapeHtml(
+                                name
+                            )}"
+
+                            data-price="${price}"
+
+                            data-image="${escapeHtml(
+                                image
+                            )}"
+                        >
+
+                            <i
+                                class="fa-solid fa-cart-shopping"
+                            ></i>
+
+                            Add to Cart
+
+                        </button>
+
+
+                    </div>
+
+                </div>
+
+            `;
+
+        }
+
+
+               // =====================================
+        // REMOVE FROM WISHLIST
+        // =====================================
+
+        async function removeFromWishlist(
+            wishlistDocumentId
+        ) {
+
+            try {
+
+                await deleteDoc(
+                    doc(
+                        db,
+                        "wishlists",
+                        wishlistDocumentId
+                    )
+                );
+
+
+                showToast(
+                    "Removed from wishlist"
+                );
+
+
+                // Reload wishlist
+
+                const user =
+                    auth.currentUser;
+
+
+                if (user) {
+
+                    await loadWishlist(
+                        user.uid
+                    );
+
+                }
+
+
+            } catch (error) {
+
+                console.error(
+                    "Remove wishlist error:",
+                    error
+                );
+
+
+                showToast(
+                    "Could not remove item"
+                );
+
+            }
+
+        }
+
+
+        // =====================================
+        // ADD TO CART
+        // =====================================
+
+        function addProductToCart(
+            id,
+            name,
+            price,
+            image
+        ) {
+
+            updateQty(
+                id,
+                name,
+                Number(price),
+                image,
+                1
+            );
+
+
+            showToast(
+                "Added to cart 🛒"
+            );
+
+        }
+
+
+        // =====================================
+        // TOAST
+        // =====================================
+
+        function showToast(
+            message
+        ) {
+
+            const toast =
+                document.getElementById(
+                    "toast"
+                );
+
+
+            toast.textContent =
+                message;
+
+
+            toast.classList.add(
+                "show"
+            );
+
+
+            setTimeout(
+                () => {
+
+                    toast.classList.remove(
+                        "show"
+                    );
+
+                },
+                2000
+            );
+
+        }
+
+
+        // =====================================
+        // ESCAPE HTML
+        // =====================================
+
+        function escapeHtml(
+            value
+        ) {
+
+            return String(value)
+
+                .replace(
+                    /&/g,
+                    "&amp;"
+                )
+
+                .replace(
+                    /</g,
+                    "&lt;"
+                )
+
+                .replace(
+                    />/g,
+                    "&gt;"
+                )
+
+                .replace(
+                    /"/g,
+                    "&quot;"
+                )
+
+                .replace(
+                    /'/g,
+                    "&#039;"
+                );
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>
