@@ -17,4 +17,23 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 // Export for use in other files
-export { app, auth, db, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc };
+export {
+    app,
+    auth,
+    db,
+    onAuthStateChanged,
+    signOut,
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    collection,
+    getDocs,
+    doc,
+    getDoc,
+    addDoc,
+    updateDoc,
+    deleteDoc,
+    setDoc,
+    query,
+    where,
+    serverTimestamp
+};
