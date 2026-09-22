@@ -68,7 +68,7 @@
 <body>
 
     <nav>
-        <a href="index.html" class="logo">BharatKart</a>
+        <a href="home.html" class="logo">BharatKart</a>
         <div class="nav-links">
             <a href="index.html">Home</a>
             <a href="#products">Products</a>
@@ -112,7 +112,19 @@
  <!-- MAIN LOGIC -->
  <script type="module">
         // 1. Import Shared Logic
-        import { auth, db, collection, getDocs, onAuthStateChanged } from './firebase.js';
+        import {
+    auth,
+    db,
+    collection,
+    getDocs,
+    onAuthStateChanged,
+    doc,
+    setDoc,
+    deleteDoc,
+    query,
+    where,
+    serverTimestamp
+} from './firebase.js';
         import { updateQty, getCart } from './js/cart.js';
         import { updateCartBadge, showToast } from './js/main.js';
 
