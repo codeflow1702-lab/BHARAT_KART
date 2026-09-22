@@ -180,7 +180,53 @@ console.log("PRODUCT COUNT:", querySnapshot.size);
                     grid.innerHTML += html;
                 });
                 updateCartBadge();
+// =====================================
+// ATTACH WISHLIST BUTTONS
+// =====================================
 
+document.querySelectorAll(".wishlist-btn").forEach(button => {
+
+    const id = button.dataset.id;
+
+    // Find this product in Firestore results
+    const product = querySnapshot.docs.find(
+        d => d.id === id
+    );
+
+    if (!product) return;
+
+    const data = product.data();
+
+
+    // Show red heart if already wishlisted
+
+    if (wishlistIds.has(id)) {
+
+        updateWishlistButton(id, true);
+
+    }
+
+
+    // Handle heart click
+
+    button.addEventListener("click", (event) => {
+
+        event.preventDefault();
+
+        event.stopPropagation();
+
+
+        toggleWishlist(
+            id,
+            data.name,
+            data.price,
+            data.image
+        );
+
+    });
+
+});
+                
             } catch (error) {
     console.error("PRODUCT ERROR:", error);
 
