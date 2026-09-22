@@ -99,8 +99,16 @@ console.log("PRODUCT COUNT:", querySnapshot.size);
                     const html = `
                         <div class="product-card" data-name="${prod.name.toLowerCase()}">
                             <div class="prod-img">
-                                <img src="${prod.image}" onerror="this.src='https://via.placeholder.com/300'">
-                            </div>
+    <img src="${prod.image}" onerror="this.src='https://via.placeholder.com/300'">
+
+    <button
+        class="wishlist-btn"
+        data-id="${prodId}"
+        title="Add to Wishlist"
+    >
+        <i class="fa-regular fa-heart"></i>
+    </button>
+</div>
                             <div style="padding:15px;">
                                 <h4 style="font-size:18px; margin-bottom:5px;">${prod.name}</h4>
                                 <span style="color:#777;">₹ ${prod.price}</span>
