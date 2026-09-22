@@ -240,6 +240,174 @@ console.log("PRODUCT COUNT:", querySnapshot.size);
             });
         }
 
+     // ================================
+// WISHLIST
+// ================================
+
+let currentUser = null;
+let wishlistIds = new Set();
+
+
+// Load user's wishlist
+
+async function loadWishlist() {
+
+    if (!currentUser) return;
+
+    wishlistIds.clear();
+
+    try {
+
+        const wishlistQuery = query(
+            collection(db, "wishlists"),
+            where("userId", "==", currentUser.uid)
+        );
+
+        const snapshot = await getDocs(wishlistQuery);
+
+        snapshot.forEach((wishlistDoc) => {
+
+            const data = wishlistDoc.data();
+
+            wishlistIds.add(data.productId);
+
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Wishlist loading error:",
+            error
+        );
+
+    }
+
+}
+
+
+// Add / Remove Wishlist
+
+window.toggleWishlist = async function(
+    productId,
+    productName,
+    productPrice,
+    productImage
+) {
+
+    if (!currentUser) {
+
+        showToast("Please login first ❤️");
+
+        return;
+
+    }
+
+
+    const wishlistId =
+        `${currentUser.uid}_${productId}`;
+
+    const wishlistRef =
+        doc(db, "wishlists", wishlistId);
+
+
+    try {
+
+        // REMOVE
+
+        if (wishlistIds.has(productId)) {
+
+            await deleteDoc(wishlistRef);
+
+            wishlistIds.delete(productId);
+
+            updateWishlistButton(productId, false);
+
+            showToast("Removed from wishlist");
+
+        }
+
+        // ADD
+
+        else {
+
+            await setDoc(wishlistRef, {
+
+                userId: currentUser.uid,
+
+                productId: productId,
+
+                name: productName,
+
+                price: Number(productPrice),
+
+                image: productImage,
+
+                createdAt: serverTimestamp()
+
+            });
+
+            wishlistIds.add(productId);
+
+            updateWishlistButton(productId, true);
+
+            showToast("Added to wishlist ❤️");
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Wishlist error:",
+            error
+        );
+
+        showToast(
+            "Wishlist error: " + error.message
+        );
+
+    }
+
+};
+
+
+// Update heart appearance
+
+function updateWishlistButton(
+    productId,
+    isActive
+) {
+
+    const button =
+        document.querySelector(
+            `.wishlist-btn[data-id="${CSS.escape(productId)}"]`
+        );
+
+    if (!button) return;
+
+
+    if (isActive) {
+
+        button.classList.add("active");
+
+        button.innerHTML =
+            '<i class="fa-solid fa-heart"></i>';
+
+        button.title =
+            "Remove from Wishlist";
+
+    } else {
+
+        button.classList.remove("active");
+
+        button.innerHTML =
+            '<i class="fa-regular fa-heart"></i>';
+
+        button.title =
+            "Add to Wishlist";
+
+    }
+
+     }
         // Init
         loadProducts();
         
