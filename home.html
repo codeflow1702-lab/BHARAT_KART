@@ -454,17 +454,25 @@ function updateWishlistButton(
     }
 
      }
-        // Init
-        loadProducts();
-        
+
         // Auth Check
-        onAuthStateChanged(auth, (user) => {
+
+onAuthStateChanged(auth, async (user) => {
+
     if (!user) {
-        window.location.href = "login/login.html";
+
+        window.location.href = "login/index.html";
+
         return;
+
     }
 
-    loadProducts();
+    currentUser = user;
+
+    await loadWishlist();
+
+    await loadProducts();
+
 });
     </script>
 </body>
