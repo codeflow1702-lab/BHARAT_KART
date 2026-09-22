@@ -68,13 +68,13 @@
             if (user) {
                 document.getElementById('userEmail').innerText = user.email;
             } else {
-                window.location.href = "login/index.html";
+                window.location.href = "login/login.html";
             }
         });
         document.getElementById('logoutBtn').addEventListener('click', () => {
             signOut(auth).then(() => {
                 showToast("Logged out successfully 👋");
-                setTimeout(() => { window.location.href = "login/index.html"; }, 1500);
+                setTimeout(() => { window.location.href = "login/login.html"; }, 1500);
             }).catch((error) => { showToast("Logout error: " + error.message); });
         });
     </script>
