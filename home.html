@@ -8,6 +8,52 @@
     <!-- LINK TO NEW CSS -->
     <link rel="stylesheet" href="css/style.css">
     <style>
+        .prod-img {
+    position: relative;
+}
+
+.wishlist-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+
+    width: 42px;
+    height: 42px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    box-shadow: 0 3px 10px rgba(0,0,0,0.12);
+
+    z-index: 5;
+
+    transition: 0.2s;
+}
+
+.wishlist-btn:hover {
+    transform: scale(1.08);
+}
+
+.wishlist-btn i {
+    font-size: 19px;
+    color: #555;
+}
+
+.wishlist-btn.active i {
+    color: #e63946;
+}
+
+.wishlist-btn.active {
+    background: #fff0f1;
+}
         /* Page Specific Styles (Hero, Grid) */
         .hero { max-width: 1300px; margin: 20px auto; background-color: var(--primary-bg); border-radius: 30px; padding: 40px 60px; display: flex; align-items: center; justify-content: space-between; min-height: 500px; }
         .hero h1 { font-size: 64px; font-weight: 800; margin-bottom: 20px; line-height: 1.1; }
