@@ -395,7 +395,7 @@
 document.getElementById("totalPrice").innerText =
     "₹ " + total;
 
-        renderCart();
+        setTimeout(renderCart, 500);;
 
         onAuthStateChanged(auth, (user) => {
             if (!user) window.location.href = "login/login.html";
