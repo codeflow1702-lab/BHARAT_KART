@@ -195,15 +195,31 @@
         </div>
 
         <div class="cart-summary">
-            <h3>Summary</h3>
-            <br>
-            <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                <span>Subtotal</span> <span id="subtotalPrice">₹ 0</span>
-            </div>
-            <div style="display:flex; justify-content:space-between; margin-top:20px; font-weight:bold; font-size:18px;">
-                <span>Total</span> <span id="totalPrice">₹ 0</span>
-            </div>
-            <button class="checkout-btn" onclick="window.location.href='checkout.html'">Checkout</button>
+
+    <h3>Summary</h3>
+
+    <div class="summary-row" style="margin-top:20px;">
+        <span>Subtotal</span>
+        <span id="subtotalPrice">₹ 0</span>
+    </div>
+
+    <div class="summary-row">
+        <span>Tax (5%)</span>
+        <span id="taxPrice">₹ 0</span>
+    </div>
+
+    <div class="summary-total">
+        <span>Total</span>
+        <span id="totalPrice">₹ 0</span>
+    </div>
+
+    <button
+        class="checkout-btn"
+        onclick="window.location.href='checkout.html'"
+    >
+        Checkout
+    </button>
+
         </div>
     </div>
 
