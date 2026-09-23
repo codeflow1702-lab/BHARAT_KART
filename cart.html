@@ -340,9 +340,17 @@
         </div>
     `;
 });
-            document.getElementById("subtotalPrice").innerText = "₹ " + total;
-            document.getElementById("totalPrice").innerText = "₹ " + Math.round(total * 1.05); // 5% tax
-        }
+            const tax = Math.round(total * 0.05);
+const finalTotal = total + tax;
+
+document.getElementById("subtotalPrice").innerText =
+    "₹ " + total;
+
+document.getElementById("taxPrice").innerText =
+    "₹ " + tax;
+
+document.getElementById("totalPrice").innerText =
+    "₹ " + finalTotal;
 
         renderCart();
 
