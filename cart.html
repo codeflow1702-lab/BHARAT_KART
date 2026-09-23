@@ -278,20 +278,20 @@
     </div>
 
     <div id="toast"></div>
+
 <script type="module">
 
 import { auth, onAuthStateChanged } from './firebase.js';
 import { getCart, updateQty, saveCart } from './js/cart.js';
 import { showToast } from './js/main.js';
 
-// Attach to window for onclick events
 window.handleUpdate = (index, change) => {
     let cart = getCart();
     const item = cart[index];
 
     item.quantity += change;
 
-    if(item.quantity <= 0) {
+    if (item.quantity <= 0) {
         cart.splice(index, 1);
     }
 
@@ -312,8 +312,6 @@ window.removeItem = (index) => {
 function renderCart() {
     const cart = getCart();
 
-    console.log("CART DATA:", cart);
-
     const container = document.getElementById("cartItemsContainer");
     const main = document.getElementById("cartContainer");
     const empty = document.getElementById("emptyCart");
@@ -333,7 +331,6 @@ function renderCart() {
     cart.forEach((item, index) => {
 
         const itemTotal = item.price * item.quantity;
-
         total += itemTotal;
 
         container.innerHTML += `
@@ -348,7 +345,6 @@ function renderCart() {
                     >
 
                     <div class="item-details">
-
                         <h4>${item.name}</h4>
 
                         <p class="item-price">
@@ -358,7 +354,6 @@ function renderCart() {
                         <p class="item-total">
                             Item total: ₹ ${itemTotal}
                         </p>
-
                     </div>
 
                 </div>
@@ -386,7 +381,6 @@ function renderCart() {
                     <button
                         class="remove-btn"
                         onclick="removeItem(${index})"
-                        title="Remove item"
                     >
                         <i class="fa-solid fa-trash"></i>
                     </button>
@@ -417,7 +411,6 @@ onAuthStateChanged(auth, (user) => {
 </script>
 
     
-        
         // Attach to window for onclick events
         window.handleUpdate = (index, change) => {
             let cart = getCart();
