@@ -278,20 +278,143 @@
     </div>
 
     <div id="toast"></div>
+<script type="module">
 
-<script>
-    alert("CART HTML IS LOADED");
+import { auth, onAuthStateChanged } from './firebase.js';
+import { getCart, updateQty, saveCart } from './js/cart.js';
+import { showToast } from './js/main.js';
+
+// Attach to window for onclick events
+window.handleUpdate = (index, change) => {
+    let cart = getCart();
+    const item = cart[index];
+
+    item.quantity += change;
+
+    if(item.quantity <= 0) {
+        cart.splice(index, 1);
+    }
+
+    saveCart(cart);
+    renderCart();
+};
+
+window.removeItem = (index) => {
+    let cart = getCart();
+
+    cart.splice(index, 1);
+    saveCart(cart);
+    renderCart();
+
+    showToast("Item removed");
+};
+
+function renderCart() {
+    const cart = getCart();
+
+    console.log("CART DATA:", cart);
+
+    const container = document.getElementById("cartItemsContainer");
+    const main = document.getElementById("cartContainer");
+    const empty = document.getElementById("emptyCart");
+
+    if (cart.length === 0) {
+        main.style.display = "none";
+        empty.style.display = "block";
+        return;
+    }
+
+    main.style.display = "grid";
+    empty.style.display = "none";
+    container.innerHTML = "";
+
+    let total = 0;
+
+    cart.forEach((item, index) => {
+
+        const itemTotal = item.price * item.quantity;
+
+        total += itemTotal;
+
+        container.innerHTML += `
+            <div class="item-row">
+
+                <div class="item-info">
+
+                    <img
+                        src="${item.image}"
+                        class="item-img"
+                        onerror="this.style.display='none'"
+                    >
+
+                    <div class="item-details">
+
+                        <h4>${item.name}</h4>
+
+                        <p class="item-price">
+                            ₹ ${item.price} each
+                        </p>
+
+                        <p class="item-total">
+                            Item total: ₹ ${itemTotal}
+                        </p>
+
+                    </div>
+
+                </div>
+
+                <div class="item-actions">
+
+                    <button
+                        class="qty-btn"
+                        onclick="handleUpdate(${index}, -1)"
+                    >
+                        −
+                    </button>
+
+                    <span class="qty-number">
+                        ${item.quantity}
+                    </span>
+
+                    <button
+                        class="qty-btn"
+                        onclick="handleUpdate(${index}, 1)"
+                    >
+                        +
+                    </button>
+
+                    <button
+                        class="remove-btn"
+                        onclick="removeItem(${index})"
+                        title="Remove item"
+                    >
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+    });
+
+    document.getElementById("subtotalPrice").innerText =
+        "₹ " + total;
+
+    document.getElementById("totalPrice").innerText =
+        "₹ " + total;
+}
+
+onAuthStateChanged(auth, (user) => {
+
+    if (!user) {
+        window.location.href = "login/login.html";
+        return;
+    }
+
+    renderCart();
+});
+
 </script>
-
-    <script type="module">
-
-alert("MODULE STARTED");
-
-import("./js/main.js")
-    .then(() => alert("MAIN.JS OK"))
-    .catch(error => alert("MAIN.JS ERROR: " + error));
-
-    </script>
 
     
         
