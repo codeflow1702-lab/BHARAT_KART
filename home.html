@@ -265,10 +265,18 @@ document.querySelectorAll(".wishlist-btn").forEach(button => {
 
         function getButtonHTML(id, name, price, image, qty) {
 
-    const safeId = JSON.stringify(id).replace(/'/g, "\\'");
-    const safeName = JSON.stringify(name).replace(/'/g, "\\'");
-    const safeImage = JSON.stringify(image).replace(/'/g, "\\'");
+    const safeId = JSON.stringify(id)
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;");
 
+const safeName = JSON.stringify(name)
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;");
+
+const safeImage = JSON.stringify(image)
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;");
+            
     if (qty > 0) {
 
         return `
