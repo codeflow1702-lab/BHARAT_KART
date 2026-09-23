@@ -283,14 +283,17 @@
     alert("CART HTML IS LOADED");
 </script>
 
-<script type="module">
+    <script type="module">
 
-    import { auth, onAuthStateChanged } from './firebase.js';
-    import { getCart, updateQty, saveCart } from './js/cart.js';
-    import { showToast } from './js/main.js';
+alert("MODULE STARTED");
 
-    alert("CART SCRIPT LOADED");
-        
+import("./js/main.js")
+    .then(() => alert("MAIN.JS OK"))
+    .catch(error => alert("MAIN.JS ERROR: " + error));
+
+    </script>
+
+    
         
         // Attach to window for onclick events
         window.handleUpdate = (index, change) => {
