@@ -263,24 +263,48 @@ document.querySelectorAll(".wishlist-btn").forEach(button => {
     updateCartBadge();
 };
 
-        // 4. Button HTML Generator (Only declared ONCE now)
         function getButtonHTML(id, name, price, image, qty) {
-            if (qty > 0) {
-                return `
-                    <div class="qty-control">
-                        <button class="qty-btn" onclick="handleUpdate('${id}', '${name}', ${price}, '${image}', -1)">−</button>
-                        <span class="qty-text">${qty}</span>
-                        <button class="qty-btn" onclick="handleUpdate('${id}', '${name}', ${price}, '${image}', 1)">+</button>
-                    </div>
-                `;
-            } else {
-                return `
-                    <button class="add-cart-btn" onclick="handleUpdate('${id}', '${name}', ${price}, '${image}', 1)">
-                        Add to Cart
-                    </button>
-                `;
-            }
-        }
+
+    const safeId = JSON.stringify(id).replace(/'/g, "\\'");
+    const safeName = JSON.stringify(name).replace(/'/g, "\\'");
+    const safeImage = JSON.stringify(image).replace(/'/g, "\\'");
+
+    if (qty > 0) {
+
+        return `
+            <div class="qty-control">
+
+                <button
+                    class="qty-btn"
+                    onclick="handleUpdate(${safeId}, ${safeName}, ${price}, ${safeImage}, -1)"
+                >
+                    −
+                </button>
+
+                <span class="qty-text">${qty}</span>
+
+                <button
+                    class="qty-btn"
+                    onclick="handleUpdate(${safeId}, ${safeName}, ${price}, ${safeImage}, 1)"
+                >
+                    +
+                </button>
+
+            </div>
+        `;
+
+    } else {
+
+        return `
+            <button
+                class="add-cart-btn"
+                onclick="handleUpdate(${safeId}, ${safeName}, ${price}, ${safeImage}, 1)"
+            >
+                Add to Cart
+            </button>
+        `;
+    }
+     }
 
         // 5. Search Logic
         const searchInput = document.getElementById('searchInput');
