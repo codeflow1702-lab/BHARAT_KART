@@ -100,7 +100,8 @@
             let total = 0;
 
             cart.forEach((item, index) => {
-                total += item.price * item.quantity;
+    const itemTotal = item.price * item.quantity;
+    total += itemTotal;
                 container.innerHTML += `
                     <div class="item-row">
                         <div style="display:flex; gap:15px; align-items:center;">
