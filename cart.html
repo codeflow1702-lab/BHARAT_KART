@@ -307,6 +307,8 @@
 
         function renderCart() {
             const cart = getCart();
+            console.log("CART DATA:", cart);
+alert("Cart items: " + cart.length);
             const container = document.getElementById("cartItemsContainer");
             const main = document.getElementById("cartContainer");
             const empty = document.getElementById("emptyCart");
@@ -317,14 +319,7 @@
                 return;
             }
 
-            function renderCart() {
-    const cart = getCart();
-
-    console.log("CART DATA:", cart);
-    alert("Cart items: " + cart.length);
-
-    const container = document.getElementById("cartItemsContainer");
-
+        
             main.style.display = "grid";
             empty.style.display = "none";
             container.innerHTML = "";
