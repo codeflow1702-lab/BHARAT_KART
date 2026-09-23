@@ -259,27 +259,71 @@
             let total = 0;
 
             cart.forEach((item, index) => {
-    const itemTotal = item.price * item.quantity;
-    total += itemTotal;
-                container.innerHTML += `
-                    <div class="item-row">
-                        <div style="display:flex; gap:15px; align-items:center;">
-                            <img src="${item.image}" class="item-img">
-                            <div>
-                                <h4>${item.name}</h4>
-                                <p>₹ ${item.price} x ${item.quantity}</p>
-                            </div>
-                        </div>
-                        <div style="display:flex; align-items:center; gap:10px;">
-                            <button onclick="handleUpdate(${index}, -1)">-</button>
-                            <span>${item.quantity}</span>
-                            <button onclick="handleUpdate(${index}, 1)">+</button>
-                            <button onclick="removeItem(${index})" style="color:red; border:none; background:none; margin-left:10px;"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </div>
-                `;
-            });
 
+    const itemTotal = item.price * item.quantity;
+
+    total += itemTotal;
+
+    container.innerHTML += `
+        <div class="item-row">
+
+            <div class="item-info">
+
+                <img
+                    src="${item.image}"
+                    class="item-img"
+                    onerror="this.style.display='none'"
+                >
+
+                <div class="item-details">
+
+                    <h4>${item.name}</h4>
+
+                    <p class="item-price">
+                        ₹ ${item.price} each
+                    </p>
+
+                    <p class="item-total">
+                        Item total: ₹ ${itemTotal}
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="item-actions">
+
+                <button
+                    class="qty-btn"
+                    onclick="handleUpdate(${index}, -1)"
+                >
+                    −
+                </button>
+
+                <span class="qty-number">
+                    ${item.quantity}
+                </span>
+
+                <button
+                    class="qty-btn"
+                    onclick="handleUpdate(${index}, 1)"
+                >
+                    +
+                </button>
+
+                <button
+                    class="remove-btn"
+                    onclick="removeItem(${index})"
+                    title="Remove item"
+                >
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+
+            </div>
+
+        </div>
+    `;
+});
             document.getElementById("subtotalPrice").innerText = "₹ " + total;
             document.getElementById("totalPrice").innerText = "₹ " + Math.round(total * 1.05); // 5% tax
         }
