@@ -240,21 +240,28 @@ document.querySelectorAll(".wishlist-btn").forEach(button => {
 }
 }
 
-        // 3. Handle Updates (Attached to Window so HTML onclick works)
         window.handleUpdate = (id, name, price, image, change) => {
-            const newCart = updateQty(id, name, price, image, change);
-            
-            // Find the new quantity
-            const item = newCart.find(i => i.id === id);
-            const newQty = item ? item.quantity : 0;
 
-            // Update just that button
-            const btnContainer = document.getElementById(`btn-${id}`);
-            if(btnContainer) {
-                btnContainer.innerHTML = getButtonHTML(id, name, price, image, newQty);
-            }
-            updateCartBadge();
-        };
+    const newCart = updateQty(
+        id,
+        name,
+        price,
+        image,
+        change
+    );
+
+    const item = newCart.find(i => i.id === id);
+    const newQty = item ? item.quantity : 0;
+
+    const btnContainer = document.getElementById(`btn-${id}`);
+
+    if (btnContainer) {
+        btnContainer.innerHTML =
+            getButtonHTML(id, name, price, image, newQty);
+    }
+
+    updateCartBadge();
+};
 
         // 4. Button HTML Generator (Only declared ONCE now)
         function getButtonHTML(id, name, price, image, qty) {
